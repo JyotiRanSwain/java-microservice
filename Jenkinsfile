@@ -1,28 +1,45 @@
 pipeline {
     agent any
-        tools {
+ tools {
         maven 'local_maven'
     }
 
     stages {
-        stage('Build and Package WAR') {
-            steps {
-                script {
-                    // You can define an array of projects or applications
-                    def applications = ['admin-server', 'api-gateway', 'config-server', 'eureka-server']
+        
+        stage('Build and Test') {
+            parallel {
+                stage('admin-server') {
+                    steps {
+                        dir('admin-server') {
+                            sh 'mvn clean package'
+                            // You can add more Maven-related build and test commands as needed
+                        }
+                                    post {
+                success {
+                    echo 'Archiving the artifacts'
+                    archiveArtifacts artifacts: '**/target/*.jar'
+                }
+            }
+                    }
+                }
 
-                    for (app in applications) {
-                        // Checkout your source code
-                        checkout scm
-
-                        // Build and package the WAR file for the current application
-                        sh "mvn clean package -Dapp=${app}"
-
-                        // Publish the WAR file as an artifact
-                        archiveArtifacts artifacts: "**/target/${app}.jar", allowEmptyArchive: true
+                stage('api-gateway') {
+                    steps {
+                        dir('api-gateway') {
+                            sh 'mvn clean package'
+                            // You can add more Maven-related build and test commands as needed
+                        }
+                                    post {
+                success {
+                    echo 'Archiving the artifacts'
+                    archiveArtifacts artifacts: '**/target/*.jar'
+                }
+            }
                     }
                 }
             }
-}
-}
-}
+        }
+
+        
+        }
+    }
