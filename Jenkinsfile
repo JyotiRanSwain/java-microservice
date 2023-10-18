@@ -14,7 +14,7 @@ pipeline {
             }
                 
         }
-        stage('service-one') {
+        stage('admin-server') {
             steps {
                  dir('service-one') {
                     sh 'mvn clean package'
