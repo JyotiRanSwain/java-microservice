@@ -11,7 +11,7 @@ pipeline {
                  dir('api-gateway') {
                     bat 'mvn clean package'
                     //sh 'docker build -t api-gateway:$BUILD_NUMBER .'           
-                    //echo 'api-gateway Build Image Completed'
+                    echo 'api-gateway Build Image Completed'
                 }
             }
                 
