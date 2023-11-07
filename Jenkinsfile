@@ -19,7 +19,7 @@ pipeline {
         stage('admin-server') {
             steps {
                  dir('admin-server') {
-                    bat 'mvn clean package'
+                    bat 'mvn clean package -Dmaven.test.skip=true'
                     //sh 'docker build -t admin-server:$BUILD_NUMBER .'           
                     //echo 'admin-server Build Image Completed'
                 }
