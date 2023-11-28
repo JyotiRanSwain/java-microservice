@@ -11,10 +11,6 @@ pipeline {
                     def applications = ['api-gateway', 'admin-server']
 
                     for (app in applications) {
-
-                        //dir(${app}) {
-                            //sh "mvn clean package"
-                        }
                         // Checkout your source code
                         //checkout scm
 
