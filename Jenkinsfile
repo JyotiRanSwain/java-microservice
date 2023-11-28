@@ -12,14 +12,14 @@ pipeline {
 
                     for (app in applications) {
 
-                        dir(${app}) {
-                            sh "mvn clean package"
+                        //dir(${app}) {
+                            //sh "mvn clean package"
                         }
                         // Checkout your source code
                         //checkout scm
 
                         // Build and package the WAR file for the current application
-                        //sh "mvn clean package -Dapp=${app}"
+                        sh "mvn clean package -Dapp=${app}"
 
                         // Publish the WAR file as an artifact
                         //archiveArtifacts artifacts: "**/target/${app}.war", allowEmptyArchive: true
