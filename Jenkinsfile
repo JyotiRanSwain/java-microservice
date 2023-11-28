@@ -3,25 +3,36 @@ pipeline {
  tools {
         maven 'local_maven'
     }
+
     stages {
-        stage('Build and Package WAR') {
+        
+        stage('api-gateway') {
+            when {
+                changeset '**/api-gateway/**'
+            }           
             steps {
-                script {
-                    // You can define an array of projects or applications
-                    def applications = ['api-gateway', 'admin-server']
-
-                    for (app in applications) {
-                        // Checkout your source code
-                        //checkout scm
-
-                        // Build and package the WAR file for the current application
-                        sh "mvn clean package -Dapp=${app}"
-
-                        // Publish the WAR file as an artifact
-                        //archiveArtifacts artifacts: "**/target/${app}.war", allowEmptyArchive: true
-                    }
+                 dir('api-gateway') {
+                    sh 'mvn clean package'
+                    //sh 'docker build -t api-gateway:$BUILD_NUMBER .'           
+                    echo 'api-gateway Build Image Completed'
                 }
             }
+                
+        }
+        stage('admin-server') {
+            when {
+                changeset '**/admin-server/**'
+            } 
+            steps {
+                 dir('admin-server') {
+                    sh 'mvn clean package -Dmaven.test.skip=true'
+                    //sh 'docker build -t admin-server:$BUILD_NUMBER .'           
+                    //echo 'admin-server Build Image Completed'
+                }
+            }
+                
+        }
+
+        
         }
     }
-}
