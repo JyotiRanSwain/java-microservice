@@ -1,6 +1,6 @@
 #!/bin/sh
 
-########################################################################
+#########################################################################
 # title:          Build Complete Project
 # author:         Alexsandro souza (https://apssouza.com.br)
 # url:            https://github.com/apssouza22
