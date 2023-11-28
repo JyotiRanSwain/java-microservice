@@ -12,7 +12,7 @@ pipeline {
 
                     for (app in applications) {
 
-                        dir('app') {
+                        dir(${app}) {
                             sh "mvn clean package"
                         }
                         // Checkout your source code
