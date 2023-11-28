@@ -9,7 +9,7 @@ pipeline {
         stage('api-gateway') {
             steps {
                  dir('api-gateway') {
-                    bat 'mvn clean package'
+                    sh 'mvn clean package'
                     //sh 'docker build -t api-gateway:$BUILD_NUMBER .'           
                     echo 'api-gateway Build Image Completed'
                 }
@@ -19,7 +19,7 @@ pipeline {
         stage('admin-server') {
             steps {
                  dir('admin-server') {
-                    bat 'mvn clean package -Dmaven.test.skip=true'
+                    sh 'mvn clean package -Dmaven.test.skip=true'
                     //sh 'docker build -t admin-server:$BUILD_NUMBER .'           
                     //echo 'admin-server Build Image Completed'
                 }
