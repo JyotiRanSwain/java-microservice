@@ -7,6 +7,9 @@ pipeline {
     stages {
         
         stage('api-gateway') {
+            when {
+                changeset '**/api-gateway/**'
+            }  
             steps {
                  dir('api-gateway') {
                     sh 'mvn clean package'
@@ -15,6 +18,9 @@ pipeline {
                 
         }
         stage('admin-server') {
+            when {
+                changeset '**/admin-server/**'
+            }  
             steps {
                  dir('admin-server') {
                     sh 'mvn clean package -Dmaven.test.skip=true'
