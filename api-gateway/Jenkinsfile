@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+ tools {
+        maven 'local_maven'
+    }
+
+    stages {
+        
+        stage('api-gateway') {
+            steps {
+                    sh 'mvn clean package'
+                }
+            }
+                
+        }
+
+        
+        }
