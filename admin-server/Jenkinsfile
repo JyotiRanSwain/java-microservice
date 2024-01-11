@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+ tools {
+        maven 'local_maven'
+    }
+
+    stages {
+        
+        stage('admin-server') {
+            steps {
+                    sh 'mvn clean package -Dmaven.test.skip=true'
+
+                }
+            }
+                
+        }
+
+        
+        }
