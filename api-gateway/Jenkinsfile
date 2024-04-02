@@ -1,16 +1,116 @@
-node {
-   stage('Fetch changes') {
-      git 'https://github.com/apssouza22/java-microservice.git'
-   }
-   stage('Build image') {
-      // Run the maven build
-      if (isUnix()) {
-         sh "mvn -f ./api-gateway/pom.xml  -Pdockerimage docker:build"
-      } else {
-         echo "Not ready for windows"
-      }
-   }
-   stage('Deploy ECS') {
-      echo "TODO deploy on AWS"
-   }
+pipeline {
+    agent any // Defaulting to any agent
+    tools {
+        maven 'local_maven'
+    }
+
+    parameters {
+        choice(
+            choices: ['default', 'win', 'aws'],
+            description: 'Select the machine to deploy to:',
+            name: 'DEPLOY_MACHINE'
+        )
+        choice(
+            choices: ['dev', 'pre-prod', 'prod'],
+            description: 'Select the environment to run the script:',
+            name: 'ENVIRONMENT'
+        )
+        string(
+            defaultValue: 'main',
+            description: 'Enter the branch name to checkout:',
+            name: 'BRANCH_NAME'
+        )
+    }
+
+    stages {
+        stage('Agent Allocation') {
+            steps {
+                script {
+                    def deployMachine = params.DEPLOY_MACHINE
+                    if (deployMachine == 'win') {
+                        node('win') {
+                            // Continue with steps for 'win' agent
+                        }
+                    } else if (deployMachine == 'aws') {
+                        node('aws') {
+                            // Continue with steps for 'aws' agent
+                        }
+                    } else {
+                        // Continue with any agent for 'default' option
+                    }
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                dir('api-gateway') { // Specify the directory to clone 'api-gateway'
+                    node('master') {
+                        script {
+                            def branchName = params.BRANCH_NAME
+                            checkout([$class: 'GitSCM', branches: [[name: branchName]], userRemoteConfigs: [[url: 'https://github.com/JyotiRanSwain/java-microservice.git']]])
+                        }
+                    }
+                }
+                dir('admin-server') { // Specify the directory to clone 'common'
+                    node('master') {
+                        script {
+                            def branchName = params.BRANCH_NAME
+                            checkout([$class: 'GitSCM', branches: [[name: branchName]], userRemoteConfigs: [[url: 'https://github.com/JyotiRanSwain/java-microservice.git']]])
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build and Deploy') {
+            steps {
+                dir('api-gateway') {
+                    node('master') {
+                        script {
+                            def environment = params.ENVIRONMENT
+                            echo "Selected environment: $environment"
+                            
+                            // Run script based on the selected environment
+                            if (environment == 'dev') {
+                                 sh 'mvn clean package'
+                            } else if (environment == 'pre-prod') {
+                                sh 'python3 pre-prod.py'
+                            } else if (environment == 'prod') {
+                                sh 'python3 prod.py'
+                            } else {
+                                error "Unsupported environment: $environment"
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        stage('Build and Deploy') {
+            steps {
+                dir('admin-server') {
+                    node('master') {
+                        script {
+                            def environment = params.ENVIRONMENT
+                            echo "Selected environment: $environment"
+                            
+                            // Run script based on the selected environment
+                            if (environment == 'dev') {
+                                sh 'mvn clean package'
+                            } else if (environment == 'pre-prod') {
+                                sh 'python3 pre-prod.py'
+                            } else if (environment == 'prod') {
+                                sh 'python3 prod.py'
+                            } else {
+                                error "Unsupported environment: $environment"
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
 }
