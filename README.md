@@ -7,7 +7,7 @@ alt="Bootstrapping a microservice architecture" width="240" height="180" border=
 
 Read about the project [here](https://dzone.com/articles/bootstrapping-microservices-your-microservice-arch)
 
-The idea of this project is to provide you a bootstrap for your next microservice architecture using Java. we are addressing main challenges that everyone faces when is starting with microservices. This project will definitely help you get an understand about microservices world and save you a lot of time in setting your initial microservice architecture.
+The idea of this project is to provide you a bootstrap for your next microservice architecture using Java. we are addressing main challenges that everyone faces when is starting with microservices. This project will definitely help you get an understand about microservices world and save you a lot of time in setting your initial microservice architecture..
 
 Basically, if you are interested in microservice, either study or want to implement microservice approach at your work, this project is for you!
 
